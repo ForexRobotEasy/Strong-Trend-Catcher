@@ -1,0 +1,76 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                        Strong Trend Catcher     |
+//|                                      Developed by Forex Robot Easy Team       |
+//|                                      Website: forexroboteasy.com       |
+//+------------------------------------------------------------------+
+
+// Global variables
+double riskPercentage = 2.5; // Risk percentage per trade
+double accountBalance;
+double riskAmount;
+double stopLoss;
+double positionSize;
+
+// Function to calculate risk and position size
+void CalculateRiskAndPositionSize()
+{
+    accountBalance = AccountInfoDouble(ACCOUNT_BALANCE);
+    riskAmount = accountBalance * riskPercentage / 100;
+    stopLoss = NormalizeDouble(riskAmount / positionSize, Digits());
+    positionSize = NormalizeDouble(riskAmount / stopLoss, 2);
+}
+
+// Function to detect price breakout from resistance or support areas
+bool IsBreakout()
+{
+    // Implement breakout detection logic here
+    return true;
+}
+
+// Function to identify entry point based on price action pattern
+double IdentifyEntryPoint()
+{
+    // Implement entry point identification logic here
+    return Ask;
+}
+
+// Function to adjust parameters for user customization
+void AdjustParameters()
+{
+    // Implement parameter adjustment logic here
+}
+
+// Function to implement trailing-stop functionality
+void TrailingStop()
+{
+    // Implement trailing-stop logic here
+}
+
+// Function to execute trades
+void ExecuteTrades()
+{
+    if (IsBreakout())
+    {
+        double entryPoint = IdentifyEntryPoint();
+        double takeProfit = entryPoint + (entryPoint - stopLoss);
+        double ticket = OrderSend(Symbol(), OP_BUY, positionSize, entryPoint, 0, stopLoss, takeProfit, 'Strong Trend Catcher', 0, 0, Green);
+        
+        if (ticket > 0)
+        {
+            TrailingStop();
+        }
+    }
+}
+
+//+------------------------------------------------------------------+
+//| Expert advisor start function                                     |
+//+------------------------------------------------------------------+
+int start()
+{
+    CalculateRiskAndPositionSize();
+    AdjustParameters();
+    ExecuteTrades();
+    
+    return 0;
+}
